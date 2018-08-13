@@ -12,6 +12,7 @@ pub struct Instrument {
     pub loopable: bool,
 }
 
+/// Key of an Instrument. Think of it as an Instrument having multiple physical keys to press, and everyone of them produces a different sound from each other.
 pub struct Key {
     /// Audio of this key
     pub audio: PCM,

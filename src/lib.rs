@@ -1,7 +1,7 @@
-/// This crate is all about using virtual Instruments and a music Sequence to produce usable music, playable by anything that can play Wave files.
-/// You will need to create a Synthesizer first, providing a Sequence and Instruments.
-/// You can use the SequenceHelper in the Helper mod to convert any Sequence format (MIDI for example) into this crate's format.
-/// You need to manually instantiate Instrument structs and push them into the Vec of the Synthesizer.
+//! This crate is all about using virtual Instruments and a music Sequence to produce usable music, playable by anything that can play Wave files.
+//! You will need to create a Synthesizer first, providing a Sequence and Instruments.
+//! You can use the SequenceHelper in the Helper mod to convert any Sequence format (MIDI for example) into this crate's format.
+//! You need to manually instantiate Instrument structs and push them into the Vec of the Synthesizer.
 
 /// Contains the errors in this library
 pub mod error;
