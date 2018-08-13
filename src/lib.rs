@@ -29,7 +29,7 @@ pub struct Synthesizer {
     /// The Sequence to play
     pub seq: Sequence,
     /// The Instruments used to play music
-    pub inst: Vec<Instrument>,
+    pub inst: HashMap<usize, Instrument>,
     /// The Frequency Lookup Table used throughout the sequence and the instruments that stores all frequency values in an absolute way
     pub f_lut: HashMap<usize, f64>,
 }
