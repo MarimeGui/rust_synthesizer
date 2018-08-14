@@ -1,4 +1,5 @@
 use error::{ForceInvalidError, TimeInvalidError};
+use std::cmp::Ordering;
 use std::result::Result;
 
 pub type Frequency = Time;
@@ -11,6 +12,23 @@ pub struct Time {
     value: f64,
 }
 
+/// Used as a result in a comparison of two Times
+pub enum Order {
+    Before,
+    Same,
+    After,
+}
+
+impl Into<Ordering> for Order {
+    fn into(self) -> Ordering {
+        match self {
+            Order::Before => Ordering::Less,
+            Order::Same => Ordering::Equal,
+            Order::After => Ordering::Greater,
+        }
+    }
+}
+
 impl Time {
     /// Creates a new Time by providing the time in seconds
     pub fn new(value: f64) -> Result<Time, TimeInvalidError> {
@@ -20,8 +38,19 @@ impl Time {
             Err(TimeInvalidError { value })
         }
     }
+    /// Returns the value
     pub fn get(self) -> f64 {
         self.value
+    }
+    /// Compares to another time
+    pub fn compare(self, other: Time) -> Order {
+        if self.value < other.value {
+            Order::Before
+        } else if self.value > other.value {
+            Order::After
+        } else {
+            Order::Same
+        }
     }
 }
 

@@ -7,6 +7,7 @@ pub enum SynthesizerError {
     TimeInvalid(TimeInvalidError),
     NoFrequencyForID(NoFrequencyForIDError),
     ForceInvalid(ForceInvalidError),
+    EmptySequence(EmptySequenceError),
 }
 
 impl Error for SynthesizerError {
@@ -15,6 +16,7 @@ impl Error for SynthesizerError {
             SynthesizerError::TimeInvalid(ref e) => e.description(),
             SynthesizerError::NoFrequencyForID(ref e) => e.description(),
             SynthesizerError::ForceInvalid(ref e) => e.description(),
+            SynthesizerError::EmptySequence(ref e) => e.description(),
         }
     }
 }
@@ -25,6 +27,7 @@ impl Display for SynthesizerError {
             SynthesizerError::TimeInvalid(ref e) => e.fmt(f),
             SynthesizerError::NoFrequencyForID(ref e) => e.fmt(f),
             SynthesizerError::ForceInvalid(ref e) => e.fmt(f),
+            SynthesizerError::EmptySequence(ref e) => e.fmt(f),
         }
     }
 }
@@ -44,6 +47,12 @@ impl From<NoFrequencyForIDError> for SynthesizerError {
 impl From<ForceInvalidError> for SynthesizerError {
     fn from(e: ForceInvalidError) -> SynthesizerError {
         SynthesizerError::ForceInvalid(e)
+    }
+}
+
+impl From<EmptySequenceError> for SynthesizerError {
+    fn from(e: EmptySequenceError) -> SynthesizerError {
+        SynthesizerError::EmptySequence(e)
     }
 }
 
@@ -101,5 +110,21 @@ impl Error for ForceInvalidError {
 impl Display for ForceInvalidError {
     fn fmt(&self, f: &mut Formatter) -> Result {
         write!(f, "Value: {}", self.value)
+    }
+}
+
+/// Raised when some operation is tried on an empty Sequence.
+#[derive(Debug)]
+pub struct EmptySequenceError {}
+
+impl Error for EmptySequenceError {
+    fn description(&self) -> &str {
+        "Tried to perform operations on an empty Sequence"
+    }
+}
+
+impl Display for EmptySequenceError {
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        write!(f, "Sequence is empty")
     }
 }
