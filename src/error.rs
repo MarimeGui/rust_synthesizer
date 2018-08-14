@@ -50,11 +50,7 @@ impl Error for TimeInvalidError {
 
 impl Display for TimeInvalidError {
     fn fmt(&self, f: &mut Formatter) -> Result {
-        write!(
-            f,
-            "Wrong value: {}",
-            self.value
-        )
+        write!(f, "Wrong value: {}", self.value)
     }
 }
 
@@ -71,10 +67,6 @@ impl Error for NoFrequencyForIDError {
 
 impl Display for NoFrequencyForIDError {
     fn fmt(&self, f: &mut Formatter) -> Result {
-        write!(
-            f,
-            "Wrong ID: {}",
-            self.id
-        )
+        write!(f, "Wrong ID: {}", self.id)
     }
 }

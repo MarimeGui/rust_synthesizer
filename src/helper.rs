@@ -1,7 +1,7 @@
 use sequence::Sequence;
-use util::Frequency;
 use std::collections::HashMap;
 use std::f64::EPSILON;
+use util::Frequency;
 
 /// Holds information about a currently playing note
 #[derive(Copy, Clone)]
@@ -39,7 +39,11 @@ impl SequenceHelper {
 impl FrequencyLookupTableBuilder {
     /// Returns an ID for the specified frequency. If it already exists, it returns the already existing ID, but if it does not, it creates it.
     pub fn get_id(&mut self, frequency: Frequency) -> usize {
-        match self.builder.iter().position(|&x| (x.get() - frequency.get()).abs() < EPSILON) {
+        match self
+            .builder
+            .iter()
+            .position(|&x| (x.get() - frequency.get()).abs() < EPSILON)
+        {
             Some(i) => i,
             None => {
                 self.builder.push(frequency);
