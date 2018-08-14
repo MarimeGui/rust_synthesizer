@@ -1,5 +1,6 @@
 use key_generator::KeyGenerator;
 use pcm::PCM;
+use util::Frequency;
 use std::collections::HashMap;
 
 /// Defines an instrument capable of playing notes
@@ -17,5 +18,5 @@ pub struct Key {
     /// Audio of this key
     pub audio: PCM,
     /// The frequency ID of the audio sound sample, should be the same as the index of the "keys" HashMap if the Key came from here
-    pub f_id: usize,
+    pub frequency: Frequency,
 }

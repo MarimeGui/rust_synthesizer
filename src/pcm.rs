@@ -9,7 +9,7 @@ pub struct PCM {
     /// Where does the music loop (if it does, leave empty otherwise)
     pub loop_info: Vec<TimeSpan>,
     /// The raw PCM data stored as f64s
-    pub data: Vec<f64>,
+    pub samples: Vec<f64>,
 }
 
 /// Parameters for a PCM stream
