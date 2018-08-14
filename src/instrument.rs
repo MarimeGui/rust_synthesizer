@@ -5,7 +5,7 @@ use util::Frequency;
 
 /// Defines an instrument capable of playing notes
 pub struct Instrument {
-    /// Keys of the instrument. Index is frequency ID defined in the FLUT.
+    /// Keys of the instrument. Index is the frequency ID defined by the Frequency Lookup.
     pub keys: HashMap<usize, Key>,
     /// The key generators that creates new keys when needed
     pub key_gen: Box<KeyGenerator>,

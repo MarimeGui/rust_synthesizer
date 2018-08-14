@@ -1,6 +1,7 @@
 use std::error::Error;
 use std::fmt::{Display, Formatter, Result};
 
+/// The main error type, contains all errors that could be thrown when running the Synthesizer
 #[derive(Debug)]
 pub enum SynthesizerError {
     TimeInvalid(TimeInvalidError),
@@ -37,8 +38,10 @@ impl From<NoFrequencyForIDError> for SynthesizerError {
     }
 }
 
+/// Raised when some f64 value cannot be used as a valid Time (negative, not finite, not a number)
 #[derive(Debug)]
 pub struct TimeInvalidError {
+    /// The incorrect value
     pub value: f64,
 }
 
@@ -54,8 +57,10 @@ impl Display for TimeInvalidError {
     }
 }
 
+/// Raised when a the Frequency Lookup failed (an ID could not get interpreted as a value)
 #[derive(Debug)]
 pub struct NoFrequencyForIDError {
+    /// The failed ID
     pub id: usize,
 }
 

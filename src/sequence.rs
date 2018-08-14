@@ -15,7 +15,7 @@ pub struct Note {
     pub t_span: TimeSpan,
     /// Velocities of the note
     pub vel: Option<Velocity>,
-    /// ID for the FLUT to get the frequency of this note
+    /// ID defined by the Frequency Lookup
     pub f_id: usize,
     /// Specifies which instrument to use when playing this note
     pub i_id: usize,

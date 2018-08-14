@@ -13,9 +13,11 @@ pub struct PartialNote {
 /// Helps the user to build a Sequence usable by the Synthesizer
 #[derive(Default)]
 pub struct SequenceHelper {
-    // InstrumentID -> FrequencyID -> PartialNote
+    /// Stores the currently playing notes. It follows the pattern InstrumentID -> FrequencyID -> PartialNote.
     pub current_notes: HashMap<usize, HashMap<usize, PartialNote>>,
+    /// The Sequence being built. Once the helper is finished, grab this for the synthesizer
     pub sequence: Sequence,
+    /// Where we are at in the sequence. Use functions to modify this and do not forget to reset it when changing tracks !
     pub at_time: f64,
 }
 

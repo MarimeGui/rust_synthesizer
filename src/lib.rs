@@ -6,7 +6,7 @@
 /// Contains the errors in this library
 pub mod error;
 /// Allows to go from a Frequency ID to a Frequency Value
-pub mod flut;
+pub mod frequency_lookup;
 /// Code for help on importing a sequence into something usable here
 pub mod helper;
 /// Instrument related data
@@ -22,7 +22,7 @@ pub mod util;
 /// Handles writing and reading Wave files
 pub mod wave;
 
-use flut::FrequencyLookup;
+use frequency_lookup::FrequencyLookup;
 use instrument::Instrument;
 use sequence::Sequence;
 use std::collections::HashMap;

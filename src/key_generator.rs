@@ -7,7 +7,8 @@ pub trait KeyGenerator {
     /// Generates a new key for an instrument.
     /// Note that the generated PCM should always be in Mono.
     /// # Arguments
-    /// * frequency - The frequency that this key should produce
+    /// * sample_rate - The number of samples per second that should be produced.
+    /// * frequency - The frequency that this key should produce.
     /// * duration - The longest time this key will be held for.
     /// This is useful if the generator creates non-loopable sounds.
     /// Can be ignored if the source is for example a pre-recorded sound sample that then gets pitch-shifted.
