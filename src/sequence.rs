@@ -30,10 +30,15 @@ pub struct Velocity {
 }
 
 impl Sequence {
+    /// Creates a new empty sequence
     pub fn new() -> Sequence {
         Sequence {
             notes: Vec::new(),
             loop_info: Vec::new(),
         }
+    }
+    /// Adds a Note to the Sequence
+    pub fn add_note(&mut self, other: Note) {
+        self.notes.push(other);
     }
 }

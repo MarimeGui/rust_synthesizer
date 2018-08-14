@@ -22,6 +22,9 @@ pub mod util;
 /// Handles writing and reading Wave files
 pub mod wave;
 
+/// The Result type used everywhere
+type Result<T> = std::result::Result<T, error::SynthesizerError>;
+
 use frequency_lookup::FrequencyLookup;
 use instrument::Instrument;
 use sequence::Sequence;
