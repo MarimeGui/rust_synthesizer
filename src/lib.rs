@@ -5,6 +5,8 @@
 
 /// Contains the errors in this library
 pub mod error;
+/// Allows to go from a Frequency ID to a Frequency Value
+pub mod flut;
 /// Code for help on importing a sequence into something usable here
 pub mod helper;
 /// Instrument related data
@@ -20,6 +22,7 @@ pub mod util;
 /// Handles writing and reading Wave files
 pub mod wave;
 
+use flut::FrequencyLookup;
 use instrument::Instrument;
 use sequence::Sequence;
 use std::collections::HashMap;
@@ -30,6 +33,6 @@ pub struct Synthesizer {
     pub seq: Sequence,
     /// The Instruments used to play music
     pub inst: HashMap<usize, Instrument>,
-    /// The Frequency Lookup Table used throughout the sequence and the instruments that stores all frequency values in an absolute way
-    pub f_lut: HashMap<usize, f64>,
+    /// The Frequency Lookup used throughout the sequence and the instruments that provides all frequency values in an absolute way
+    pub f_lut: Box<FrequencyLookup>,
 }

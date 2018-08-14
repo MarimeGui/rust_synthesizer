@@ -1,6 +1,7 @@
 use util::TimeSpan;
 
 /// Represents a Sequence of notes forming music. Think of it as a music sheet
+#[derive(Default)]
 pub struct Sequence {
     /// Vector of notes composing the sequence
     pub notes: Vec<Note>,
@@ -26,4 +27,13 @@ pub struct Velocity {
     pub pressed: f64,
     /// Velocity when released
     pub released: f64,
+}
+
+impl Sequence {
+    pub fn new() -> Sequence {
+        Sequence {
+            notes: Vec::new(),
+            loop_info: Vec::new(),
+        }
+    }
 }

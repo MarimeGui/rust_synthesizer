@@ -1,6 +1,6 @@
 use instrument::Key;
-use pcm::{PCM, PCMParameters};
-use util::{Frequency, Duration};
+use pcm::{PCMParameters, PCM};
+use util::{Duration, Frequency};
 
 /// Generates new keys to add to an Instrument
 pub trait KeyGenerator {
@@ -22,7 +22,7 @@ impl KeyGenerator for SquareWaveGenerator {
         let mut samples = Vec::new();
         let sample_rate_float = f64::from(*sample_rate);
         let sample_period = sample_rate_float.recip();
-        let nb_samples = duration.get() as u64 * u64::from(*sample_rate);
+        let nb_samples = (duration.get() * sample_rate_float) as u64; // Lossy
         let note_period = frequency.get().recip();
         let half_note_period = note_period / 2f64;
         let mut pos_seconds = 0f64;
@@ -38,12 +38,12 @@ impl KeyGenerator for SquareWaveGenerator {
             audio: PCM {
                 parameters: PCMParameters {
                     sample_rate: *sample_rate,
-                    nb_channels: 1
+                    nb_channels: 1,
                 },
                 loop_info: Vec::new(),
-                samples
+                samples,
             },
-            frequency: *frequency
+            frequency: *frequency,
         }
     }
 }

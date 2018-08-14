@@ -1,7 +1,7 @@
 use key_generator::KeyGenerator;
 use pcm::PCM;
-use util::Frequency;
 use std::collections::HashMap;
+use util::Frequency;
 
 /// Defines an instrument capable of playing notes
 pub struct Instrument {
