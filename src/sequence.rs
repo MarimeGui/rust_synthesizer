@@ -1,4 +1,4 @@
-use util::TimeSpan;
+use util::{Force, TimeSpan};
 
 /// Represents a Sequence of notes forming music. Think of it as a music sheet
 #[derive(Default)]
@@ -14,7 +14,7 @@ pub struct Note {
     /// Defines exactly when this note is played in the sequence
     pub t_span: TimeSpan,
     /// Velocities of the note
-    pub vel: Option<Velocity>,
+    pub vel: Velocity,
     /// ID defined by the Frequency Lookup
     pub f_id: usize,
     /// Specifies which instrument to use when playing this note
@@ -24,9 +24,9 @@ pub struct Note {
 /// Holds velocities for a Note
 pub struct Velocity {
     /// Velocity when pressed
-    pub pressed: f64,
+    pub on: Option<Force>,
     /// Velocity when released
-    pub released: f64,
+    pub off: Option<Force>,
 }
 
 impl Sequence {

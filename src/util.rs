@@ -1,4 +1,4 @@
-use error::TimeInvalidError;
+use error::{ForceInvalidError, TimeInvalidError};
 use std::result::Result;
 
 pub type Frequency = Time;
@@ -74,5 +74,25 @@ impl TimeSpan {
     /// Returns in seconds how long the span is
     pub fn duration(&self) -> Duration {
         self.duration
+    }
+}
+
+/// Describes a force for velocities used in a Note. It forces the value to be in [0; 1].
+#[derive(Copy, Clone)]
+pub struct Force {
+    value: f64,
+}
+
+impl Force {
+    /// Creates a new Force from an f64 value
+    pub fn new(value: f64) -> Result<Force, ForceInvalidError> {
+        if value.is_normal() && value >= 0f64 && value <= 1f64 {
+            return Ok(Force { value });
+        }
+        Err(ForceInvalidError { value })
+    }
+    /// Returns the value
+    pub fn get(self) -> f64 {
+        self.value
     }
 }

@@ -6,6 +6,7 @@ use std::fmt::{Display, Formatter, Result};
 pub enum SynthesizerError {
     TimeInvalid(TimeInvalidError),
     NoFrequencyForID(NoFrequencyForIDError),
+    ForceInvalid(ForceInvalidError),
 }
 
 impl Error for SynthesizerError {
@@ -13,6 +14,7 @@ impl Error for SynthesizerError {
         match *self {
             SynthesizerError::TimeInvalid(ref e) => e.description(),
             SynthesizerError::NoFrequencyForID(ref e) => e.description(),
+            SynthesizerError::ForceInvalid(ref e) => e.description(),
         }
     }
 }
@@ -22,6 +24,7 @@ impl Display for SynthesizerError {
         match self {
             SynthesizerError::TimeInvalid(ref e) => e.fmt(f),
             SynthesizerError::NoFrequencyForID(ref e) => e.fmt(f),
+            SynthesizerError::ForceInvalid(ref e) => e.fmt(f),
         }
     }
 }
@@ -35,6 +38,12 @@ impl From<TimeInvalidError> for SynthesizerError {
 impl From<NoFrequencyForIDError> for SynthesizerError {
     fn from(e: NoFrequencyForIDError) -> SynthesizerError {
         SynthesizerError::NoFrequencyForID(e)
+    }
+}
+
+impl From<ForceInvalidError> for SynthesizerError {
+    fn from(e: ForceInvalidError) -> SynthesizerError {
+        SynthesizerError::ForceInvalid(e)
     }
 }
 
@@ -73,5 +82,24 @@ impl Error for NoFrequencyForIDError {
 impl Display for NoFrequencyForIDError {
     fn fmt(&self, f: &mut Formatter) -> Result {
         write!(f, "Wrong ID: {}", self.id)
+    }
+}
+
+/// Raised when a value that had to be interpreted as a Force was not between [0; 1].
+#[derive(Debug)]
+pub struct ForceInvalidError {
+    /// The invalid force
+    pub value: f64,
+}
+
+impl Error for ForceInvalidError {
+    fn description(&self) -> &str {
+        "A value that was tried to be used a force was not valid for this purpose."
+    }
+}
+
+impl Display for ForceInvalidError {
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        write!(f, "Value: {}", self.value)
     }
 }

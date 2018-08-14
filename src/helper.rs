@@ -2,14 +2,14 @@ use sequence::Sequence;
 use sequence::{Note, Velocity};
 use std::collections::HashMap;
 use std::f64::EPSILON;
-use util::{Duration, Frequency, Time, TimeSpan};
+use util::{Duration, Force, Frequency, Time, TimeSpan};
 use Result;
 
 /// Holds information about a currently playing note
 #[derive(Copy, Clone)]
 pub struct PartialNote {
     pub start_at: Time,
-    pub on_velocity: f64,
+    pub on_v: Option<Force>,
 }
 
 /// Helps the user to build a Sequence usable by the Synthesizer
@@ -55,7 +55,7 @@ impl SequenceHelper {
     /// * f_id - The Frequency ID
     /// * i_id - The Instrument ID
     /// * on_v - The velocity that the key was pressed down at (between 0 and 1)
-    pub fn start_note(&mut self, f_id: usize, i_id: usize, on_v: f64) -> Result<()> {
+    pub fn start_note(&mut self, f_id: usize, i_id: usize, on_v: Option<Force>) -> Result<()> {
         let instrument_map = self.current_notes.entry(i_id).or_insert_with(HashMap::new);
         match instrument_map.get(&f_id) {
             None => {
@@ -63,7 +63,7 @@ impl SequenceHelper {
                     f_id,
                     PartialNote {
                         start_at: Time::new(self.at_time)?,
-                        on_velocity: on_v,
+                        on_v,
                     },
                 );
             }
@@ -77,16 +77,16 @@ impl SequenceHelper {
     /// * f_id - The Frequency ID
     /// * i_id - The Instrument ID
     /// * off_v - The velocity that the key was released at (between 0 and 1)
-    pub fn stop_note(&mut self, f_id: usize, i_id: usize, off_v: f64) -> Result<()> {
+    pub fn stop_note(&mut self, f_id: usize, i_id: usize, off_v: Option<Force>) -> Result<()> {
         let mut to_remove = true;
         if let Some(inst_map) = self.current_notes.get_mut(&i_id) {
             if let Some(partial_note) = inst_map.get(&f_id) {
                 self.sequence.add_note(Note {
                     t_span: TimeSpan::new(partial_note.start_at, Time::new(self.at_time)?)?,
-                    vel: Some(Velocity {
-                        pressed: partial_note.on_velocity,
-                        released: off_v,
-                    }),
+                    vel: Velocity {
+                        on: partial_note.on_v,
+                        off: off_v,
+                    },
                     f_id,
                     i_id,
                 });
@@ -110,7 +110,7 @@ impl SequenceHelper {
         f_id: usize,
         i_id: usize,
         duration: Duration,
-        vel: Option<Velocity>,
+        vel: Velocity,
     ) -> Result<()> {
         self.sequence.add_note(Note {
             t_span: TimeSpan::new_rel(Time::new(self.at_time)?, duration)?,
