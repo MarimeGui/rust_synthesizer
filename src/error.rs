@@ -8,6 +8,7 @@ pub enum SynthesizerError {
     NoFrequencyForID(NoFrequencyForIDError),
     ForceInvalid(ForceInvalidError),
     EmptySequence(EmptySequenceError),
+    NoInstrument(NoInstrumentError),
 }
 
 impl Error for SynthesizerError {
@@ -17,6 +18,7 @@ impl Error for SynthesizerError {
             SynthesizerError::NoFrequencyForID(ref e) => e.description(),
             SynthesizerError::ForceInvalid(ref e) => e.description(),
             SynthesizerError::EmptySequence(ref e) => e.description(),
+            SynthesizerError::NoInstrument(ref e) => e.description(),
         }
     }
 }
@@ -28,6 +30,7 @@ impl Display for SynthesizerError {
             SynthesizerError::NoFrequencyForID(ref e) => e.fmt(f),
             SynthesizerError::ForceInvalid(ref e) => e.fmt(f),
             SynthesizerError::EmptySequence(ref e) => e.fmt(f),
+            SynthesizerError::NoInstrument(ref e) => e.fmt(f),
         }
     }
 }
@@ -53,6 +56,12 @@ impl From<ForceInvalidError> for SynthesizerError {
 impl From<EmptySequenceError> for SynthesizerError {
     fn from(e: EmptySequenceError) -> SynthesizerError {
         SynthesizerError::EmptySequence(e)
+    }
+}
+
+impl From<NoInstrumentError> for SynthesizerError {
+    fn from(e: NoInstrumentError) -> SynthesizerError {
+        SynthesizerError::NoInstrument(e)
     }
 }
 
@@ -126,5 +135,24 @@ impl Error for EmptySequenceError {
 impl Display for EmptySequenceError {
     fn fmt(&self, f: &mut Formatter) -> Result {
         write!(f, "Sequence is empty")
+    }
+}
+
+/// Raised when it is impossible to find an Instrument for a specified ID.
+#[derive(Debug)]
+pub struct NoInstrumentError {
+    /// The invalid ID
+    pub i_id: usize,
+}
+
+impl Error for NoInstrumentError {
+    fn description(&self) -> &str {
+        "An instrument could not be found for a specified ID."
+    }
+}
+
+impl Display for NoInstrumentError {
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        write!(f, "ID: {}", self.i_id)
     }
 }

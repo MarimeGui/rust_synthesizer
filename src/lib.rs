@@ -25,8 +25,10 @@ pub mod wave;
 /// The Result type used everywhere
 type Result<T> = std::result::Result<T, error::SynthesizerError>;
 
+use error::NoInstrumentError;
 use frequency_lookup::FrequencyLookup;
 use instrument::Instrument;
+use pcm::{PCMParameters, PCM};
 use sequence::Sequence;
 use std::collections::HashMap;
 
@@ -37,5 +39,23 @@ pub struct Synthesizer {
     /// The Instruments used to play music
     pub inst: HashMap<usize, Instrument>,
     /// The Frequency Lookup used throughout the sequence and the instruments that provides all frequency values in an absolute way
-    pub f_lut: Box<FrequencyLookup>,
+    pub f_lu: Box<FrequencyLookup>,
+    /// The parameters for the final output
+    pub params: PCMParameters,
+}
+
+impl Synthesizer {
+    pub fn run(&mut self) -> PCM {
+        unimplemented!();
+    }
+    pub fn gen_inst_keys(&mut self) -> Result<()> {
+        for (i_id, f_id_duration) in &self.seq.list_freq_by_inst() {
+            let inst = self
+                .inst
+                .get_mut(i_id)
+                .ok_or(NoInstrumentError { i_id: *i_id })?;
+            inst.gen_keys(self.params.sample_rate, f_id_duration, &self.f_lu)?;
+        }
+        Ok(())
+    }
 }

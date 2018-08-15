@@ -1,7 +1,9 @@
+use frequency_lookup::FrequencyLookup;
 use key_generator::KeyGenerator;
 use pcm::PCM;
 use std::collections::HashMap;
-use util::Frequency;
+use util::{Duration, Frequency};
+use Result;
 
 /// Defines an instrument capable of playing notes
 pub struct Instrument {
@@ -19,4 +21,21 @@ pub struct Key {
     pub audio: PCM,
     /// The frequency ID of the audio sound sample, should be the same as the index of the "keys" HashMap if the Key came from here
     pub frequency: Frequency,
+}
+
+impl Instrument {
+    #[allow(borrowed_box)] // I do not know how to fix the Clippy warning
+    pub fn gen_keys(
+        &mut self,
+        sample_rate: u32,
+        f_id_duration: &[(usize, Duration)],
+        f_lu: &Box<FrequencyLookup>,
+    ) -> Result<()> {
+        for (f_id, duration) in f_id_duration {
+            let freq = f_lu.get_freq(f_id)?;
+            self.keys
+                .insert(*f_id, self.key_gen.gen(&sample_rate, &freq, duration));
+        }
+        Ok(())
+    }
 }

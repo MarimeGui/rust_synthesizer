@@ -12,23 +12,6 @@ pub struct Time {
     value: f64,
 }
 
-/// Used as a result in a comparison of two Times
-pub enum Order {
-    Before,
-    Same,
-    After,
-}
-
-impl Into<Ordering> for Order {
-    fn into(self) -> Ordering {
-        match self {
-            Order::Before => Ordering::Less,
-            Order::Same => Ordering::Equal,
-            Order::After => Ordering::Greater,
-        }
-    }
-}
-
 impl Time {
     /// Creates a new Time by providing the time in seconds
     pub fn new(value: f64) -> Result<Time, TimeInvalidError> {
@@ -43,13 +26,13 @@ impl Time {
         self.value
     }
     /// Compares to another time
-    pub fn compare(self, other: Time) -> Order {
+    pub fn compare(self, other: Time) -> Ordering {
         if self.value < other.value {
-            Order::Before
+            Ordering::Less
         } else if self.value > other.value {
-            Order::After
+            Ordering::Greater
         } else {
-            Order::Same
+            Ordering::Equal
         }
     }
 }
