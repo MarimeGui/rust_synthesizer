@@ -9,6 +9,7 @@ pub enum SynthesizerError {
     ForceInvalid(ForceInvalidError),
     EmptySequence(EmptySequenceError),
     NoInstrument(NoInstrumentError),
+    NoKeyInInstrument(NoKeyInInstrumentError),
 }
 
 impl Error for SynthesizerError {
@@ -19,6 +20,7 @@ impl Error for SynthesizerError {
             SynthesizerError::ForceInvalid(ref e) => e.description(),
             SynthesizerError::EmptySequence(ref e) => e.description(),
             SynthesizerError::NoInstrument(ref e) => e.description(),
+            SynthesizerError::NoKeyInInstrument(ref e) => e.description(),
         }
     }
 }
@@ -31,6 +33,7 @@ impl Display for SynthesizerError {
             SynthesizerError::ForceInvalid(ref e) => e.fmt(f),
             SynthesizerError::EmptySequence(ref e) => e.fmt(f),
             SynthesizerError::NoInstrument(ref e) => e.fmt(f),
+            SynthesizerError::NoKeyInInstrument(ref e) => e.fmt(f),
         }
     }
 }
@@ -62,6 +65,12 @@ impl From<EmptySequenceError> for SynthesizerError {
 impl From<NoInstrumentError> for SynthesizerError {
     fn from(e: NoInstrumentError) -> SynthesizerError {
         SynthesizerError::NoInstrument(e)
+    }
+}
+
+impl From<NoKeyInInstrumentError> for SynthesizerError {
+    fn from(e: NoKeyInInstrumentError) -> SynthesizerError {
+        SynthesizerError::NoKeyInInstrument(e)
     }
 }
 
@@ -154,5 +163,24 @@ impl Error for NoInstrumentError {
 impl Display for NoInstrumentError {
     fn fmt(&self, f: &mut Formatter) -> Result {
         write!(f, "ID: {}", self.i_id)
+    }
+}
+
+/// Raised when a Key in an Instrument for a Frequency was not found
+#[derive(Debug)]
+pub struct NoKeyInInstrumentError {
+    /// The invalid Frequency ID
+    pub f_id: usize,
+}
+
+impl Error for NoKeyInInstrumentError {
+    fn description(&self) -> &str {
+        "A key could not be found for a Frequency ID in an Instrument."
+    }
+}
+
+impl Display for NoKeyInInstrumentError {
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        write!(f, "Frequency ID: {}", self.f_id)
     }
 }

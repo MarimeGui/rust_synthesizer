@@ -29,6 +29,7 @@ impl FrequencyLookup for Vec<Frequency> {
 }
 
 /// Example implementation of FrequencyLookup for MIDI
+#[derive(Clone, Copy)]
 pub struct MIDIFrequencyLookup {}
 
 impl FrequencyLookup for MIDIFrequencyLookup {

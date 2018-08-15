@@ -5,7 +5,7 @@ use std::result::Result;
 use util::{Duration, Force, TimeSpan};
 
 /// Represents a Sequence of notes forming music. Think of it as a music sheet
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct Sequence {
     /// Vector of notes composing the sequence
     pub notes: Vec<Note>,
@@ -14,6 +14,7 @@ pub struct Sequence {
 }
 
 /// A single note played by a single instrument a a certain point in time. It is part of a Sequence
+#[derive(Clone, Copy)]
 pub struct Note {
     /// Defines exactly when this note is played in the sequence
     pub t_span: TimeSpan,
@@ -26,6 +27,7 @@ pub struct Note {
 }
 
 /// Holds velocities for a Note
+#[derive(Clone, Copy)]
 pub struct Velocity {
     /// Velocity when pressed
     pub on: Option<Force>,

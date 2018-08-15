@@ -16,6 +16,7 @@ pub trait KeyGenerator {
 }
 
 /// Example implementation of a Key Generator that creates Square Wave Signals
+#[derive(Clone, Copy)]
 pub struct SquareWaveGenerator {}
 
 impl KeyGenerator for SquareWaveGenerator {

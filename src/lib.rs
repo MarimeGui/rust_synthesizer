@@ -41,20 +41,51 @@ pub struct Synthesizer {
     /// The Frequency Lookup used throughout the sequence and the instruments that provides all frequency values in an absolute way
     pub f_lu: Box<FrequencyLookup>,
     /// The parameters for the final output
-    pub params: PCMParameters,
+    pub parms: PCMParameters,
 }
 
 impl Synthesizer {
-    pub fn run(&mut self) -> PCM {
-        unimplemented!();
+    /// Runs the Synthesizer and generates music
+    pub fn run(&mut self) -> Result<PCM> {
+        self.seq.sort_by_time();
+        self.gen_inst_keys()?;
+        let sample_rate_float = f64::from(self.parms.sample_rate);
+        let nb_channels_float = f64::from(self.parms.nb_channels);
+        let nb_samples =
+            (self.seq.calc_music_duration()?.get() * sample_rate_float * nb_channels_float).round()
+                as usize; // Lossy
+        let mut out_pcm_data = vec![0f64; nb_samples];
+        for note in &self.seq.notes {
+            let to_add = self
+                .inst
+                .get(&note.i_id)
+                .ok_or(NoInstrumentError { i_id: note.i_id })?
+                .gen_sound(note.f_id, note.t_span.duration())?;
+            let out_start_sample =
+                (note.t_span.start_at().get() * sample_rate_float * nb_channels_float).round()
+                    as usize; // Lossy
+            for (sample_nb, sample) in to_add.samples.iter().enumerate() {
+                for channel in 0..self.parms.nb_channels {
+                    out_pcm_data[out_start_sample
+                                     + (sample_nb * self.parms.nb_channels as usize)
+                                     + channel as usize] += sample; // Lossy
+                }
+            }
+        }
+        Ok(PCM {
+            parameters: self.parms,
+            loop_info: Vec::new(), // Needs to change
+            samples: out_pcm_data,
+        })
     }
+    /// Generates all keys necessary for all Instruments
     pub fn gen_inst_keys(&mut self) -> Result<()> {
         for (i_id, f_id_duration) in &self.seq.list_freq_by_inst() {
             let inst = self
                 .inst
                 .get_mut(i_id)
                 .ok_or(NoInstrumentError { i_id: *i_id })?;
-            inst.gen_keys(self.params.sample_rate, f_id_duration, &self.f_lu)?;
+            inst.gen_keys(self.parms.sample_rate, f_id_duration, &self.f_lu)?;
         }
         Ok(())
     }

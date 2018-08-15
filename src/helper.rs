@@ -13,7 +13,7 @@ pub struct PartialNote {
 }
 
 /// Helps the user to build a Sequence usable by the Synthesizer
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct SequenceHelper {
     /// Stores the currently playing notes. It follows the pattern InstrumentID -> FrequencyID -> PartialNote.
     pub current_notes: HashMap<usize, HashMap<usize, PartialNote>>,
@@ -24,6 +24,7 @@ pub struct SequenceHelper {
 }
 
 /// Builds a Frequency Lookup Table if nothing else can be used.
+#[derive(Clone)]
 pub struct FrequencyLookupTableBuilder {
     /// The internal vector that stores the frequencies. You can re-use this vector as the FrequencyLookup in the synthesizer.
     pub builder: Vec<Frequency>,

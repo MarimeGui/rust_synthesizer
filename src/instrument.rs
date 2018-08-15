@@ -1,3 +1,4 @@
+use error::NoKeyInInstrumentError;
 use frequency_lookup::FrequencyLookup;
 use key_generator::KeyGenerator;
 use pcm::PCM;
@@ -16,6 +17,7 @@ pub struct Instrument {
 }
 
 /// Key of an Instrument. Think of it as an Instrument having multiple physical keys to press, and everyone of them produces a different sound from each other.
+#[derive(Clone)]
 pub struct Key {
     /// Audio of this key
     pub audio: PCM,
@@ -24,6 +26,7 @@ pub struct Key {
 }
 
 impl Instrument {
+    /// Generates keys provided as arguments
     #[allow(borrowed_box)] // I do not know how to fix the Clippy warning
     pub fn gen_keys(
         &mut self,
@@ -37,5 +40,20 @@ impl Instrument {
                 .insert(*f_id, self.key_gen.gen(&sample_rate, &freq, duration));
         }
         Ok(())
+    }
+    /// "Plays" the instrument and returns a sound with the provided parameters
+    pub fn gen_sound(&self, f_id: usize, duration: Duration) -> Result<PCM> {
+        let key = self.keys.get(&f_id).ok_or(NoKeyInInstrumentError { f_id })?;
+        let nb_samples = (duration.get() * f64::from(key.audio.parameters.sample_rate)) as usize;
+        let mut pcm_out = Vec::with_capacity(nb_samples);
+        let last_key_sample = key.audio.samples.len() - 1;
+        for current_sample in 0..nb_samples {
+            pcm_out.push(key.audio.samples[current_sample % last_key_sample]);
+        }
+        Ok(PCM {
+            parameters: key.audio.parameters,
+            loop_info: Vec::new(),
+            samples: pcm_out,
+        })
     }
 }
