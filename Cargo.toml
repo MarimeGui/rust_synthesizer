@@ -4,3 +4,4 @@ version = "0.1.0"
 authors = ["MarimeGui <lepro.guillaume@gmail.com>"]
 
 [dependencies]
+ez_io = { git = "https://github.com/MarimeGui/ez_io.git" }

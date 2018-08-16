@@ -3,6 +3,8 @@
 //! You can use the SequenceHelper in the Helper mod to convert any Sequence format (MIDI for example) into this crate's format.
 //! You need to manually instantiate Instrument structs and push them into the Vec of the Synthesizer.
 
+extern crate ez_io;
+
 /// Contains the errors in this library
 pub mod error;
 /// Allows to go from a Frequency ID to a Frequency Value

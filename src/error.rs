@@ -1,5 +1,6 @@
 use std::error::Error;
 use std::fmt::{Display, Formatter, Result};
+use std::io::Error as IOError;
 
 /// The main error type, contains all errors that could be thrown when running the Synthesizer
 #[derive(Debug)]
@@ -182,5 +183,58 @@ impl Error for NoKeyInInstrumentError {
 impl Display for NoKeyInInstrumentError {
     fn fmt(&self, f: &mut Formatter) -> Result {
         write!(f, "Frequency ID: {}", self.f_id)
+    }
+}
+
+/// Possible errors when writing the PCM down
+#[derive(Debug)]
+pub enum WriteError {
+    IO(IOError),
+    NoSamples(NoSamplesError),
+}
+
+impl Error for WriteError {
+    fn description(&self) -> &str {
+        match *self {
+            WriteError::IO(ref e) => e.description(),
+            WriteError::NoSamples(ref e) => e.description(),
+        }
+    }
+}
+
+impl Display for WriteError {
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        match self {
+            WriteError::IO(ref e) => e.fmt(f),
+            WriteError::NoSamples(ref e) => e.fmt(f),
+        }
+    }
+}
+
+impl From<IOError> for WriteError {
+    fn from(e: IOError) -> WriteError {
+        WriteError::IO(e)
+    }
+}
+
+impl From<NoSamplesError> for WriteError {
+    fn from(e: NoSamplesError) -> WriteError {
+        WriteError::NoSamples(e)
+    }
+}
+
+/// Raised when there is no Sample in a PCM
+#[derive(Debug)]
+pub struct NoSamplesError {}
+
+impl Error for NoSamplesError {
+    fn description(&self) -> &str {
+        "There are no samples in a PCM struct."
+    }
+}
+
+impl Display for NoSamplesError {
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        write!(f, "No samples")
     }
 }

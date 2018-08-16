@@ -1,3 +1,5 @@
+use error::NoSamplesError;
+use std::result::Result;
 use util::TimeSpan;
 
 /// Holds PCM data as f64s.
@@ -20,4 +22,23 @@ pub struct PCMParameters {
     pub sample_rate: u32,
     /// How many channels
     pub nb_channels: u16,
+}
+
+impl PCM {
+    pub fn get_extreme(&self) -> Result<f64, NoSamplesError> {
+        let mut extreme: Option<f64> = None;
+        for sample in &self.samples {
+            let mut change: bool = false;
+            match extreme {
+                Some(e) => {
+                    change = sample.abs() > e;
+                }
+                None => extreme = Some(*sample),
+            }
+            if change {
+                extreme = Some(sample.abs());
+            }
+        }
+        extreme.ok_or(NoSamplesError {})
+    }
 }
