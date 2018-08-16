@@ -1,8 +1,11 @@
 use error::WriteError;
 use ez_io::WriteE;
 use pcm::PCM;
+use std::i16::MAX as I16Max;
+use std::i32::MAX as I32Max;
 use std::io::Write;
 use std::result::Result;
+use std::u8::MAX as U8Max;
 
 /// Represents a Wave File
 pub struct Wave {
@@ -25,6 +28,7 @@ impl Wave {
     pub fn write<W: Write>(&self, writer: &mut W) -> Result<(), WriteError> {
         // Error for bigger than 32 bits streams
         let extreme = self.pcm.get_extreme()?;
+        let max_value = self.sample_type.get_max_value();
         let data_chunk_interior_size =
             self.pcm.samples.len() as u32 * u32::from(self.sample_type.get_sample_size());
         writer.write_all(&[b'R', b'I', b'F', b'F'])?; // RIFF Chunk
@@ -50,13 +54,13 @@ impl Wave {
         for sample in &self.pcm.samples {
             match self.sample_type {
                 SampleType::Unsigned8 => {
-                    writer.write_to_u8(((sample / extreme) * 255f64).round() as u8)?;
+                    writer.write_to_u8(((sample / extreme) * max_value).round() as u8)?;
                 }
                 SampleType::Signed16 => {
-                    writer.write_le_to_i16(((sample / extreme) * 32_767f64).round() as i16)?;
+                    writer.write_le_to_i16(((sample / extreme) * max_value).round() as i16)?;
                 }
                 SampleType::Signed32 => {
-                    writer.write_le_to_u32(((sample / extreme) * 2_147_483_647f64).round() as u32)?;
+                    writer.write_le_to_u32(((sample / extreme) * max_value).round() as u32)?;
                 }
             }
         }
@@ -71,6 +75,13 @@ impl SampleType {
             SampleType::Unsigned8 => 1,
             SampleType::Signed16 => 2,
             SampleType::Signed32 => 4,
+        }
+    }
+    pub fn get_max_value(&self) -> f64 {
+        match *self {
+            SampleType::Unsigned8 => f64::from(U8Max),
+            SampleType::Signed16 => f64::from(I16Max),
+            SampleType::Signed32 => f64::from(I32Max),
         }
     }
 }
