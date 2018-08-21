@@ -1,11 +1,8 @@
 use error::WriteError;
 use ez_io::WriteE;
 use pcm::PCM;
-use std::i16::MAX as I16Max;
-use std::i32::MAX as I32Max;
 use std::io::Write;
 use std::result::Result;
-use std::u8::MAX as U8Max;
 
 /// Represents a Wave File
 pub struct Wave {
@@ -79,9 +76,9 @@ impl SampleType {
     }
     pub fn get_max_value(&self) -> f64 {
         match *self {
-            SampleType::Unsigned8 => f64::from(U8Max),
-            SampleType::Signed16 => f64::from(I16Max),
-            SampleType::Signed32 => f64::from(I32Max),
+            SampleType::Unsigned8 => f64::from(<u8>::max_value()),
+            SampleType::Signed16 => f64::from(<i16>::max_value()),
+            SampleType::Signed32 => f64::from(<i32>::max_value()),
         }
     }
 }
