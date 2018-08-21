@@ -51,7 +51,7 @@ impl Wave {
         for sample in &self.pcm.samples {
             match self.sample_type {
                 SampleType::Unsigned8 => {
-                    writer.write_to_u8(((sample / extreme) * max_value).round() as u8)?;
+                    writer.write_to_u8(((((sample / extreme) + 1f64) / 2f64) * max_value).round() as u8)?;
                 }
                 SampleType::Signed16 => {
                     writer.write_le_to_i16(((sample / extreme) * max_value).round() as i16)?;
