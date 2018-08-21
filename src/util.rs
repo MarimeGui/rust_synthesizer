@@ -98,7 +98,7 @@ pub struct Volume {
 impl Volume {
     /// Creates a new Volume from an f64 value
     pub fn new(value: f64) -> Result<Volume, ForceInvalidError> {
-        if value.is_normal() && value >= 0f64 && value <= 1f64 {
+        if value.is_finite() && value >= 0f64 && value <= 1f64 {
             return Ok(Volume { value });
         }
         Err(ForceInvalidError { value })

@@ -97,11 +97,11 @@ impl SequenceHelper {
     }
 
     /// Directly adds a new note to the Sequence.
-    /// /// # Arguments
+    /// # Arguments
     /// * f_id - The Frequency ID
     /// * i_id - The Instrument ID
     /// * duration - How long the Note plays for
-    /// * vec - The (optional) velocity for the note
+    /// * vol - The (optional) velocity for the note
     pub fn new_note(
         &mut self,
         f_id: usize,
