@@ -2,7 +2,7 @@ use error::EmptySequenceError;
 use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::result::Result;
-use util::{Duration, Force, TimeSpan};
+use util::{Duration, Volume, TimeSpan};
 
 /// Represents a Sequence of notes forming music. Think of it as a music sheet
 #[derive(Clone, Default)]
@@ -14,25 +14,16 @@ pub struct Sequence {
 }
 
 /// A single note played by a single instrument a a certain point in time. It is part of a Sequence
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 pub struct Note {
     /// Defines exactly when this note is played in the sequence
     pub t_span: TimeSpan,
-    /// Velocities of the note
-    pub vel: Velocity,
+    /// Volume of the note for each channel.
+    pub vol: Vec<Volume>,
     /// ID defined by the Frequency Lookup
     pub f_id: usize,
     /// Specifies which instrument to use when playing this note
     pub i_id: usize,
-}
-
-/// Holds velocities for a Note
-#[derive(Clone, Copy)]
-pub struct Velocity {
-    /// Velocity when pressed
-    pub on: Option<Force>,
-    /// Velocity when released
-    pub off: Option<Force>,
 }
 
 impl Sequence {
@@ -90,5 +81,20 @@ impl Sequence {
             }
         }
         list
+    }
+}
+
+impl Note {
+    /// Returns the volume for a defined number of channels
+    pub fn get_volume(&self, nb_channels: usize) -> Vec<f64> {
+        if self.vol.len() == nb_channels {
+            let mut volumes = Vec::with_capacity(nb_channels);
+            for ch in &self.vol {
+                volumes.push(ch.get())
+            }
+            volumes
+        } else {
+            vec![1f64; nb_channels]
+        }
     }
 }

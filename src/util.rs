@@ -89,17 +89,17 @@ impl TimeSpan {
     }
 }
 
-/// Describes a force for velocities used in a Note. It forces the value to be in [0; 1].
+/// Describes the loudness of a Note. It forces the value to be in [0; 1].
 #[derive(Copy, Clone)]
-pub struct Force {
+pub struct Volume {
     value: f64,
 }
 
-impl Force {
-    /// Creates a new Force from an f64 value
-    pub fn new(value: f64) -> Result<Force, ForceInvalidError> {
+impl Volume {
+    /// Creates a new Volume from an f64 value
+    pub fn new(value: f64) -> Result<Volume, ForceInvalidError> {
         if value.is_normal() && value >= 0f64 && value <= 1f64 {
-            return Ok(Force { value });
+            return Ok(Volume { value });
         }
         Err(ForceInvalidError { value })
     }
