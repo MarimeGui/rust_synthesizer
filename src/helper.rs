@@ -24,7 +24,7 @@ pub struct SequenceHelper {
 }
 
 /// Builds a Frequency Lookup Table if nothing else can be used.
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FrequencyLookupTableBuilder {
     /// The internal vector that stores the frequencies. You can re-use this vector as the FrequencyLookup in the synthesizer.
     pub builder: Vec<Frequency>,
@@ -124,6 +124,12 @@ impl SequenceHelper {
 }
 
 impl FrequencyLookupTableBuilder {
+    /// Creates a new builder
+    pub fn new() -> FrequencyLookupTableBuilder {
+        FrequencyLookupTableBuilder {
+            builder: Vec::new()
+        }
+    }
     /// Returns an ID for the specified frequency. If it already exists, it returns the already existing ID, but if it does not, it gets created.
     pub fn get_id(&mut self, frequency: Frequency) -> usize {
         match self

@@ -15,7 +15,7 @@ pub struct Time {
 impl Time {
     /// Creates a new Time by providing the time in seconds
     pub fn new(value: f64) -> Result<Time, TimeInvalidError> {
-        if (value.is_normal()) & (value > 0f64) {
+        if (value.is_finite()) & (value >= 0f64) {
             Ok(Time { value })
         } else {
             Err(TimeInvalidError { value })
@@ -52,7 +52,7 @@ impl TimeSpan {
     /// Creates a new TimeSpan from a beginning and end date
     pub fn new(start_at: Time, end_at: Time) -> Result<TimeSpan, TimeInvalidError> {
         let duration = end_at.value - start_at.value;
-        if (duration.is_normal()) & (duration > 0f64) {
+        if (duration.is_finite()) & (duration > 0f64) {
             Ok(TimeSpan {
                 start_at,
                 end_at,
@@ -65,7 +65,7 @@ impl TimeSpan {
     /// Creates a new TimeSpan from a Start time and a Duration
     pub fn new_rel(start_at: Time, duration: Duration) -> Result<TimeSpan, TimeInvalidError> {
         let end_at = start_at.value + duration.value;
-        if (end_at.is_normal()) & (end_at > 0f64) {
+        if (end_at.is_finite()) & (end_at > 0f64) {
             Ok(TimeSpan {
                 start_at,
                 end_at: Time { value: end_at },

@@ -27,7 +27,6 @@ pub struct Key {
 
 impl Instrument {
     /// Generates keys provided as arguments
-    #[allow(borrowed_box)] // I do not know how to fix the Clippy warning
     pub fn gen_keys(
         &mut self,
         sample_rate: u32,

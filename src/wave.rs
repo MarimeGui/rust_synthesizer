@@ -41,9 +41,9 @@ impl Wave {
                 * u32::from(self.pcm.parameters.nb_channels)
                 * u32::from(self.sample_type.get_sample_size()),
         )?; // Byte Rate
-        writer.write_le_to_u32(
-            u32::from(self.pcm.parameters.nb_channels)
-                * u32::from(self.sample_type.get_sample_size()),
+        writer.write_le_to_u16(
+            self.pcm.parameters.nb_channels
+                * u16::from(self.sample_type.get_sample_size()),
         )?; // Block Align
         writer.write_le_to_u16(u16::from(self.sample_type.get_sample_size()) * 8)?;
         writer.write_all(&[b'd', b'a', b't', b'a'])?; // Sub-chunk 2 ID
