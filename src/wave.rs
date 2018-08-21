@@ -42,8 +42,7 @@ impl Wave {
                 * u32::from(self.sample_type.get_sample_size()),
         )?; // Byte Rate
         writer.write_le_to_u16(
-            self.pcm.parameters.nb_channels
-                * u16::from(self.sample_type.get_sample_size()),
+            self.pcm.parameters.nb_channels * u16::from(self.sample_type.get_sample_size()),
         )?; // Block Align
         writer.write_le_to_u16(u16::from(self.sample_type.get_sample_size()) * 8)?;
         writer.write_all(&[b'd', b'a', b't', b'a'])?; // Sub-chunk 2 ID
@@ -51,7 +50,9 @@ impl Wave {
         for sample in &self.pcm.samples {
             match self.sample_type {
                 SampleType::Unsigned8 => {
-                    writer.write_to_u8(((((sample / extreme) + 1f64) / 2f64) * max_value).round() as u8)?;
+                    writer.write_to_u8(
+                        ((((sample / extreme) + 1f64) / 2f64) * max_value).round() as u8
+                    )?;
                 }
                 SampleType::Signed16 => {
                     writer.write_le_to_i16(((sample / extreme) * max_value).round() as i16)?;

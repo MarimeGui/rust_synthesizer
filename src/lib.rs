@@ -63,6 +63,10 @@ impl Synthesizer {
                 .get(&note.i_id)
                 .ok_or(NoInstrumentError { i_id: note.i_id })?
                 .gen_sound(note.f_id, note.t_span.duration())?;
+            let on_vel = match note.vel.on {
+                Some(f) => f.get(),
+                None => 1f64,
+            };
             let out_start_sample =
                 (note.t_span.start_at().get() * sample_rate_float * nb_channels_float).round()
                     as usize; // Lossy
@@ -70,7 +74,7 @@ impl Synthesizer {
                 for channel in 0..self.parms.nb_channels {
                     out_pcm_data[out_start_sample
                                      + (sample_nb * self.parms.nb_channels as usize)
-                                     + channel as usize] += sample; // Lossy
+                                     + channel as usize] += sample * on_vel; // Lossy
                 }
             }
         }

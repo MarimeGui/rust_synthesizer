@@ -127,7 +127,7 @@ impl FrequencyLookupTableBuilder {
     /// Creates a new builder
     pub fn new() -> FrequencyLookupTableBuilder {
         FrequencyLookupTableBuilder {
-            builder: Vec::new()
+            builder: Vec::new(),
         }
     }
     /// Returns an ID for the specified frequency. If it already exists, it returns the already existing ID, but if it does not, it gets created.
