@@ -1,7 +1,7 @@
 use error::WriteError;
 use ez_io::WriteE;
 use pcm::PCM;
-use std::io::Write;
+use std::io::{Write, Cursor};
 use std::result::Result;
 
 /// Represents a Wave File
@@ -28,12 +28,13 @@ impl Wave {
         let max_value = self.sample_type.get_max_value();
         let data_chunk_interior_size =
             self.pcm.samples.len() as u32 * u32::from(self.sample_type.get_sample_size());
+        // File Itself
         writer.write_all(&[b'R', b'I', b'F', b'F'])?; // RIFF Chunk
         writer.write_le_to_u32(36 + data_chunk_interior_size)?;
         writer.write_all(&[b'W', b'A', b'V', b'E'])?; // WAVE Format
         writer.write_all(&[b'f', b'm', b't', b' '])?; // Format Chunk
-        writer.write_le_to_u32(16)?;
-        writer.write_le_to_u16(1)?;
+        writer.write_le_to_u32(16)?;  // Chunk Size
+        writer.write_le_to_u16(1)?;  // Audio Format
         writer.write_le_to_u16(self.pcm.parameters.nb_channels)?;
         writer.write_le_to_u32(self.pcm.parameters.sample_rate)?;
         writer.write_le_to_u32(
@@ -44,22 +45,30 @@ impl Wave {
         writer.write_le_to_u16(
             self.pcm.parameters.nb_channels * u16::from(self.sample_type.get_sample_size()),
         )?; // Block Align
-        writer.write_le_to_u16(u16::from(self.sample_type.get_sample_size()) * 8)?;
+        writer.write_le_to_u16(u16::from(self.sample_type.get_sample_size()) * 8)?;  // Bits per sample
         writer.write_all(&[b'd', b'a', b't', b'a'])?; // Sub-chunk 2 ID
         writer.write_le_to_u32(data_chunk_interior_size)?;
-        for sample in &self.pcm.samples {
-            match self.sample_type {
-                SampleType::Unsigned8 => {
-                    writer.write_to_u8(
-                        ((((sample / extreme) + 1f64) / 2f64) * max_value).round() as u8
-                    )?;
+        match self.sample_type {
+            SampleType::Unsigned8 => {
+                let mut to_write = Vec::new();
+                for sample in &self.pcm.samples {
+                    to_write.push(((((sample / extreme) + 1f64) / 2f64) * max_value).round() as u8);
                 }
-                SampleType::Signed16 => {
-                    writer.write_le_to_i16(((sample / extreme) * max_value).round() as i16)?;
+                writer.write_all(&to_write)?;
+            }
+            SampleType::Signed16 => {
+                let mut mem_writer = Cursor::new(Vec::new());
+                for sample in &self.pcm.samples {
+                    mem_writer.write_le_to_i16(((sample / extreme) * max_value).round() as i16)?;
                 }
-                SampleType::Signed32 => {
-                    writer.write_le_to_u32(((sample / extreme) * max_value).round() as u32)?;
+                writer.write_all(&mem_writer.into_inner())?;
+            }
+            SampleType::Signed32 => {
+                let mut mem_writer = Cursor::new(Vec::new());
+                for sample in &self.pcm.samples {
+                    mem_writer.write_le_to_i32(((sample / extreme) * max_value).round() as i32)?;
                 }
+                writer.write_all(&mem_writer.into_inner())?;
             }
         }
         Ok(())
