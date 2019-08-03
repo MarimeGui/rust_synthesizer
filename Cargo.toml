@@ -5,3 +5,4 @@ authors = ["MarimeGui <lepro.guillaume@gmail.com>"]
 
 [dependencies]
 ez_io = { git = "https://github.com/MarimeGui/ez_io.git" }
+rand = "0.7.0"

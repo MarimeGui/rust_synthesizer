@@ -4,6 +4,7 @@
 //! You need to manually instantiate Instrument structs and push them into the Vec of the Synthesizer.
 
 extern crate ez_io;
+extern crate rand;
 
 /// Contains the errors in this library
 pub mod error;

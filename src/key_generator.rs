@@ -1,5 +1,6 @@
 use instrument::Key;
 use pcm::{PCMParameters, PCM};
+use rand::Rng;
 use util::{Duration, Frequency};
 
 /// Generates new keys to add to an Instrument
@@ -105,6 +106,32 @@ impl KeyGenerator for SawtoothWaveGenerator {
         for _ in 0..nb_samples {
             samples.push(1f64 + ((pos_seconds % note_period) * (-2f64 / note_period)));
             pos_seconds += sample_period;
+        }
+        Key {
+            audio: PCM {
+                parameters: PCMParameters {
+                    sample_rate,
+                    nb_channels: 1,
+                },
+                loop_info: Vec::new(),
+                samples,
+            },
+            frequency,
+        }
+    }
+}
+
+/// A KeyGenerator that generates just plain white noise
+#[derive(Clone, Copy)]
+pub struct NoiseGenerator {}
+
+impl KeyGenerator for NoiseGenerator {
+    fn gen(&mut self, sample_rate: u32, frequency: Frequency, duration: Duration) -> Key {
+        let nb_samples = (duration.get() * f64::from(sample_rate)) as usize; // Lossy
+        let mut samples = Vec::with_capacity(nb_samples);
+        let mut rng = rand::thread_rng();
+        for _ in 0..nb_samples {
+            samples.push(rng.gen_range(-1f64, 1f64));
         }
         Key {
             audio: PCM {
