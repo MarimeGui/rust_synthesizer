@@ -35,7 +35,7 @@ pub struct MIDIFrequencyLookup {}
 impl FrequencyLookup for MIDIFrequencyLookup {
     fn get_freq(&self, id: &usize) -> Result<Frequency> {
         Ok(Frequency::new(
-            2f64.powf((id - 69) as f64 / 12f64) * 440f64,
+            2f64.powf((*id as f64 - 69f64) / 12f64) * 440f64,
         )?) // Lossy
     }
 }
