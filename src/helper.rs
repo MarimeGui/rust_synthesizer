@@ -81,12 +81,17 @@ impl SequenceHelper {
         let mut to_remove = true;
         if let Some(inst_map) = self.current_notes.get_mut(&i_id) {
             if let Some(partial_note) = inst_map.get(&f_id) {
-                self.sequence.add_note(Note {
-                    t_span: TimeSpan::new(partial_note.start_at, Time::new(self.at_time)?)?,
-                    vol: partial_note.vol.clone(),
-                    f_id,
-                    i_id,
-                });
+                match TimeSpan::new(partial_note.start_at, Time::new(self.at_time)?) {
+                    Ok(t) => {
+                        self.sequence.add_note(Note {
+                            t_span: t,
+                            vol: partial_note.vol.clone(),
+                            f_id,
+                            i_id,
+                        });
+                    }
+                    Err(_) => {} // Ignore events that have a duration of 0 seconds
+                }
                 to_remove = true;
             }
             if to_remove {
