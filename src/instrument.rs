@@ -34,9 +34,9 @@ impl Instrument {
         f_lu: &Box<FrequencyLookup>,
     ) -> Result<()> {
         for (f_id, duration) in f_id_duration {
-            let freq = f_lu.get_freq(f_id)?;
+            let freq = f_lu.get_freq(*f_id)?;
             self.keys
-                .insert(*f_id, self.key_gen.gen(&sample_rate, &freq, duration));
+                .insert(*f_id, self.key_gen.gen(sample_rate, freq, *duration));
         }
         Ok(())
     }

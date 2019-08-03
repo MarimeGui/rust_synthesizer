@@ -12,7 +12,7 @@ pub trait KeyGenerator {
     /// * duration - The longest time this key will be held for.
     /// This is useful if the generator creates non-loopable sounds.
     /// Can be ignored if the source is for example a pre-recorded sound sample that then gets pitch-shifted.
-    fn gen(&mut self, sample_rate: &u32, frequency: &Frequency, duration: &Duration) -> Key;
+    fn gen(&mut self, sample_rate: u32, frequency: Frequency, duration: Duration) -> Key;
 }
 
 /// Example implementation of a Key Generator that creates Square Wave Signals
@@ -20,9 +20,9 @@ pub trait KeyGenerator {
 pub struct SquareWaveGenerator {}
 
 impl KeyGenerator for SquareWaveGenerator {
-    fn gen(&mut self, sample_rate: &u32, frequency: &Frequency, duration: &Duration) -> Key {
+    fn gen(&mut self, sample_rate: u32, frequency: Frequency, duration: Duration) -> Key {
         let mut samples = Vec::new();
-        let sample_rate_float = f64::from(*sample_rate);
+        let sample_rate_float = f64::from(sample_rate);
         let sample_period = sample_rate_float.recip();
         let nb_samples = (duration.get() * sample_rate_float) as u64; // Lossy
         let note_period = frequency.get().recip();
@@ -39,13 +39,13 @@ impl KeyGenerator for SquareWaveGenerator {
         Key {
             audio: PCM {
                 parameters: PCMParameters {
-                    sample_rate: *sample_rate,
+                    sample_rate,
                     nb_channels: 1,
                 },
                 loop_info: Vec::new(),
                 samples,
             },
-            frequency: *frequency,
+            frequency,
         }
     }
 }
@@ -55,9 +55,9 @@ impl KeyGenerator for SquareWaveGenerator {
 pub struct TriangleWaveGenerator {}
 
 impl KeyGenerator for TriangleWaveGenerator {
-    fn gen(&mut self, sample_rate: &u32, frequency: &Frequency, duration: &Duration) -> Key {
+    fn gen(&mut self, sample_rate: u32, frequency: Frequency, duration: Duration) -> Key {
         let mut samples = Vec::new();
-        let sample_rate_float = f64::from(*sample_rate);
+        let sample_rate_float = f64::from(sample_rate);
         let sample_period = sample_rate_float.recip();
         let nb_samples = (duration.get() * sample_rate_float) as u64; // Lossy
         let note_period = frequency.get().recip();
@@ -79,13 +79,13 @@ impl KeyGenerator for TriangleWaveGenerator {
         Key {
             audio: PCM {
                 parameters: PCMParameters {
-                    sample_rate: *sample_rate,
+                    sample_rate,
                     nb_channels: 1,
                 },
                 loop_info: Vec::new(),
                 samples,
             },
-            frequency: *frequency,
+            frequency,
         }
     }
 }
@@ -95,9 +95,9 @@ impl KeyGenerator for TriangleWaveGenerator {
 pub struct SawtoothWaveGenerator {}
 
 impl KeyGenerator for SawtoothWaveGenerator {
-    fn gen(&mut self, sample_rate: &u32, frequency: &Frequency, duration: &Duration) -> Key {
+    fn gen(&mut self, sample_rate: u32, frequency: Frequency, duration: Duration) -> Key {
         let mut samples = Vec::new();
-        let sample_rate_float = f64::from(*sample_rate);
+        let sample_rate_float = f64::from(sample_rate);
         let sample_period = sample_rate_float.recip();
         let nb_samples = (duration.get() * sample_rate_float) as u64; // Lossy
         let note_period = frequency.get().recip();
@@ -109,13 +109,13 @@ impl KeyGenerator for SawtoothWaveGenerator {
         Key {
             audio: PCM {
                 parameters: PCMParameters {
-                    sample_rate: *sample_rate,
+                    sample_rate,
                     nb_channels: 1,
                 },
                 loop_info: Vec::new(),
                 samples,
             },
-            frequency: *frequency,
+            frequency,
         }
     }
 }
