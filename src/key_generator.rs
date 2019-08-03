@@ -49,3 +49,43 @@ impl KeyGenerator for SquareWaveGenerator {
         }
     }
 }
+
+/// Example implementation of a Key Generator that creates Square Wave Signals
+#[derive(Clone, Copy)]
+pub struct TriangleWaveGenerator {}
+
+impl KeyGenerator for TriangleWaveGenerator {
+    fn gen(&mut self, sample_rate: &u32, frequency: &Frequency, duration: &Duration) -> Key {
+        let mut samples = Vec::new();
+        let sample_rate_float = f64::from(*sample_rate);
+        let sample_period = sample_rate_float.recip();
+        let nb_samples = (duration.get() * sample_rate_float) as u64; // Lossy
+        let note_period = frequency.get().recip();
+        let quarter_note_period = note_period / 4f64;
+        let mut pos_seconds = 0f64;
+        for _ in 0..nb_samples {
+            let period_pos = pos_seconds % note_period;
+            if period_pos < quarter_note_period {
+                samples.push(period_pos * (4f64 / note_period));
+            } else if period_pos < (3f64 * quarter_note_period) {
+                samples.push(((period_pos - quarter_note_period) * -(4f64 / note_period)) + 1f64);
+            } else {
+                samples.push(
+                    ((period_pos - (3f64 * quarter_note_period)) * (4f64 / note_period)) - 1f64,
+                );
+            }
+            pos_seconds += sample_period;
+        }
+        Key {
+            audio: PCM {
+                parameters: PCMParameters {
+                    sample_rate: *sample_rate,
+                    nb_channels: 1,
+                },
+                loop_info: Vec::new(),
+                samples,
+            },
+            frequency: *frequency,
+        }
+    }
+}

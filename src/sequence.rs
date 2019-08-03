@@ -2,7 +2,7 @@ use error::EmptySequenceError;
 use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::result::Result;
-use util::{Duration, Volume, TimeSpan};
+use util::{Duration, TimeSpan, Volume};
 
 /// Represents a Sequence of notes forming music. Think of it as a music sheet
 #[derive(Clone, Default)]

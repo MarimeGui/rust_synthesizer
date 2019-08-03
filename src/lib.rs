@@ -63,15 +63,15 @@ impl Synthesizer {
                 .get(&note.i_id)
                 .ok_or(NoInstrumentError { i_id: note.i_id })?
                 .gen_sound(note.f_id, note.t_span.duration())?;
-            let volumes = note.get_volume(self.params.nb_channels as usize);  // Lossy
+            let volumes = note.get_volume(self.params.nb_channels as usize); // Lossy
             let out_start_sample =
                 (note.t_span.start_at().get() * sample_rate_float * nb_channels_float).round()
                     as usize; // Lossy
             for (sample_nb, sample) in to_add.samples.iter().enumerate() {
                 for (channel, volume) in volumes.iter().enumerate() {
                     out_pcm_data[out_start_sample
-                                     + (sample_nb * self.params.nb_channels as usize)
-                                     + channel as usize] += sample * volume; // Lossy
+                        + (sample_nb * self.params.nb_channels as usize)
+                        + channel as usize] += sample * volume; // Lossy
                 }
             }
         }

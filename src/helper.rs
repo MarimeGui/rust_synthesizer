@@ -1,8 +1,8 @@
-use sequence::Sequence;
 use sequence::Note;
+use sequence::Sequence;
 use std::collections::HashMap;
 use std::f64::EPSILON;
-use util::{Duration, Volume, Frequency, Time, TimeSpan};
+use util::{Duration, Frequency, Time, TimeSpan, Volume};
 use Result;
 
 /// Holds information about a currently playing note

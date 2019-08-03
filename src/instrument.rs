@@ -42,7 +42,10 @@ impl Instrument {
     }
     /// "Plays" the instrument and returns a sound with the provided parameters
     pub fn gen_sound(&self, f_id: usize, duration: Duration) -> Result<PCM> {
-        let key = self.keys.get(&f_id).ok_or(NoKeyInInstrumentError { f_id })?;
+        let key = self
+            .keys
+            .get(&f_id)
+            .ok_or(NoKeyInInstrumentError { f_id })?;
         let nb_samples = (duration.get() * f64::from(key.audio.parameters.sample_rate)) as usize;
         let mut pcm_out = Vec::with_capacity(nb_samples);
         let last_key_sample = key.audio.samples.len() - 1;

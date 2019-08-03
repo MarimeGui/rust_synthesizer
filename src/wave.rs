@@ -1,7 +1,7 @@
 use error::WriteError;
 use ez_io::WriteE;
 use pcm::PCM;
-use std::io::{Write, Cursor};
+use std::io::{Cursor, Write};
 use std::result::Result;
 
 /// Represents a Wave File
@@ -33,8 +33,8 @@ impl Wave {
         writer.write_le_to_u32(36 + data_chunk_interior_size)?;
         writer.write_all(&[b'W', b'A', b'V', b'E'])?; // WAVE Format
         writer.write_all(&[b'f', b'm', b't', b' '])?; // Format Chunk
-        writer.write_le_to_u32(16)?;  // Chunk Size
-        writer.write_le_to_u16(1)?;  // Audio Format
+        writer.write_le_to_u32(16)?; // Chunk Size
+        writer.write_le_to_u16(1)?; // Audio Format
         writer.write_le_to_u16(self.pcm.parameters.nb_channels)?;
         writer.write_le_to_u32(self.pcm.parameters.sample_rate)?;
         writer.write_le_to_u32(
@@ -45,7 +45,7 @@ impl Wave {
         writer.write_le_to_u16(
             self.pcm.parameters.nb_channels * u16::from(self.sample_type.get_sample_size()),
         )?; // Block Align
-        writer.write_le_to_u16(u16::from(self.sample_type.get_sample_size()) * 8)?;  // Bits per sample
+        writer.write_le_to_u16(u16::from(self.sample_type.get_sample_size()) * 8)?; // Bits per sample
         writer.write_all(&[b'd', b'a', b't', b'a'])?; // Sub-chunk 2 ID
         writer.write_le_to_u32(data_chunk_interior_size)?;
         match self.sample_type {
