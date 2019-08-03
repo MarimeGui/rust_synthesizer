@@ -59,11 +59,20 @@ impl Synthesizer {
                 as usize; // Lossy
         let mut out_pcm_data = vec![0f64; nb_samples];
         for note in &self.seq.notes {
-            let to_add = self
+            let mut to_add = self
                 .inst
                 .get(&note.i_id)
                 .ok_or(NoInstrumentError { i_id: note.i_id })?
                 .gen_sound(note.f_id, note.t_span.duration())?;
+            let nb_samples = to_add.samples.len();
+            // Forced falloff to prevent popping sounds
+            let falloff = 100;
+            if nb_samples > falloff {
+                for i in 0..falloff {
+                    to_add.samples[nb_samples - (falloff - i)] *=
+                        (i as f64 * (-(1f64 / (falloff - 1) as f64))) + 1f64;
+                }
+            }
             let volumes = note.get_volume(self.params.nb_channels as usize); // Lossy
             let out_start_sample =
                 (note.t_span.start_at().get() * sample_rate_float * nb_channels_float).round()
